@@ -15,6 +15,12 @@ sync:
           "$.customManagers": "append"
           "$.packageRules": "append"
         overrides:
+          schedule:
+            - "on the first day of the month"
+          automerge: false
+          automergeStrategy: null
+          vulnerabilityAlerts:
+            automerge: false
           customManagers:
             - autoReplaceStringTemplate: "java = \"temurin-{{{newValue}}}\""
               customType: "regex"
