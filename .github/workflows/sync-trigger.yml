@@ -29,16 +29,17 @@ on:
       # Sync config
       - ".github/sync-config.yml"
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   detect-and-trigger:
     # Skip if triggered by smyklot bot (prevents infinite loops)
     if: github.actor != 'smyklot[bot]'
-    runs-on: ubuntu-24.04
+    runs-on: ${{ fromJSON(vars.RUNNER_LABEL || '["ubuntu-24.04"]') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2 # Required for paths-filter to compare commits
 
@@ -48,7 +49,7 @@ jobs:
       # to true (not files/smyklot); the workflow logic then triggers a full sync.
       - name: Detect changed files
         id: changes
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
             files:
@@ -68,9 +69,9 @@ jobs:
 
       - name: Generate App Token
         id: token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          app-id: ${{ vars.SMYKLOT_APP_ID }}
+          client-id: ${{ vars.SMYKLOT_CLIENT_ID || 'Iv23liMyF31aNYay8IXy' }}
           private-key: ${{ secrets.SMYKLOT_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: .github
